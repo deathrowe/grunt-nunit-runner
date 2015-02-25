@@ -32,7 +32,13 @@ module.exports = function(grunt) {
         console.log();
 
         var taskComplete = this.async();
-        var nunitProcess = process.spawn(command.path, command.args, { windowsVerbatimArguments: true });
+        var nunitProcess;
+        
+        if (process.platform === 'darwin' || process.platform === 'linux'){
+            nunitProcess = childProcess.spawn('mono', [command.path, command.args[0].replace(/"/g, '')]);
+        } else {
+            nunitProcess = childProcess.spawn(command.path, command.args, { windowsVerbatimArguments: true });
+        }
 
         var log = function(message) { console.log(message.toString('utf8')); };
 
